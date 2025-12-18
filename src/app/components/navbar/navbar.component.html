@@ -1,0 +1,99 @@
+<header class="nav-wrapper">
+  <nav class="nav">
+
+    <!-- LEFT : Logo -->
+    <div class="nav-left">
+      <a routerLink="/" class="brand">
+        <span class="brand-badge">MP</span>
+        <span class="brand-text">Moussavou Smart Parking</span>
+      </a>
+    </div>
+
+    <!-- CENTER : Menu -->
+    <div class="nav-center">
+
+      <a routerLink="/" routerLinkActive="active-link">
+        Accueil
+      </a>
+
+      <!-- ADMIN MENU -->
+      <div *ngIf="role === 'admin'" class="menu-group">
+
+        <button class="menu-btn" (click)="toggleAdmin()">
+          Espace Admin ▾
+        </button>
+
+        <div class="dropdown" *ngIf="menuAdminOpen">
+          <a routerLink="/admin-dashboard">Tableau de bord</a>
+          <a routerLink="/utilisateurs">Gestion des utilisateurs</a>
+          <a routerLink="/parkings">Gestion des parkings</a>
+          <a routerLink="/cartes">Gestion des cartes RFID</a>
+          <a routerLink="/transactions">Transactions</a>
+          <a routerLink="/accesslogs">Journaux d'accès</a>
+        </div>
+      </div>
+
+      <!-- GESTIONNAIRE MENU -->
+      <div *ngIf="role === 'gestionnaire'" class="menu-group">
+        <button class="menu-btn" (click)="toggleGest()">
+          Espace Gestionnaire ▾
+        </button>
+
+        <div class="dropdown" *ngIf="menuGestOpen">
+          <a routerLink="/gestionnaire-dashboard">Dashboard</a>
+          <a routerLink="/parkings">Mes parkings</a>
+          <a routerLink="/cartes">Gestion des cartes RFID</a>
+          <a routerLink="/transactions">Transactions</a>
+          <a routerLink="/accesslogs">Journaux d'accès</a>
+        </div>
+      </div>
+
+      <!-- CLIENT MENU -->
+      <div *ngIf="role === 'client'" class="menu-group">
+        <button class="menu-btn" (click)="toggleClient()">
+          Espace Client ▾
+        </button>
+
+        <div class="dropdown" *ngIf="menuClientOpen">
+          <a routerLink="/client-dashboard">Mon espace</a>
+          <a routerLink="/transactions">Mes transactions</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT : Connexion / User -->
+    <div class="nav-right">
+
+      <ng-container *ngIf="!isAuth; else logged">
+
+        <button class="btn-ghost" routerLink="/login">
+          Connexion
+        </button>
+
+        <button class="btn-primary small" routerLink="/register">
+          Créer un compte
+        </button>
+
+      </ng-container>
+
+      <ng-template #logged>
+        <div class="user-chip">
+          <div class="user-circle">
+            {{ (user?.nom || 'U')[0] | uppercase }}
+          </div>
+          <div class="user-info">
+            <span class="user-name">{{ user?.nom }}</span>
+            <span class="user-role">{{ role | titlecase }}</span>
+          </div>
+        </div>
+
+        <button class="btn-outline small" (click)="logout()">
+          Déconnexion
+        </button>
+      </ng-template>
+
+    </div>
+
+  </nav>
+</header>

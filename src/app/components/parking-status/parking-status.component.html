@@ -1,0 +1,64 @@
+<div class="glass-card" style="max-width: 1100px; width:100%;">
+
+  <h2 style="margin-top:0;">État des parkings</h2>
+  <p style="color:#9ca3af; margin-bottom:1.5rem;">
+    Visualisation en temps réel de l’occupation des parkings
+  </p>
+
+  <!-- Filtre localisation -->
+  <div style="max-width:300px; margin-bottom:1.5rem;">
+    <label>Filtrer par localisation</label>
+    <select [(ngModel)]="selectedLocalisation" (change)="appliquerFiltre()">
+      <option value="">Toutes</option>
+      <option *ngFor="let loc of localisations" [value]="loc">
+        {{ loc }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Cartes parkings -->
+  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:1.5rem;">
+    
+    <div *ngFor="let p of filteredParkings" class="glass-card">
+
+        <h3 style="margin-top:0;">{{ p.nom }}</h3>
+        <p style="font-size:0.85rem; color:#9ca3af;">
+            {{ p.localisation }}
+        </p>
+
+        <div style="display:flex; justify-content:space-between; margin-top:0.8rem;">
+            <span style="color:#4ade80;">
+            Libres : {{ countFree(p.places) }}
+            </span>
+            <span style="color:#f87171;">
+            Occupées : {{ countBusy(p.places) }}
+            </span>
+        </div>
+
+        <!-- 🔲 Mini plan du parking -->
+        <div class="parking-map-public">
+
+            <div
+            class="parking-spot"
+            *ngFor="let pl of p.places"
+            [ngClass]="{
+                'free': pl.statut === 'libre',
+                'busy': pl.statut === 'occupee'
+            }"
+            [attr.title]="'Place ' + pl.numero"
+            >
+            <div class="spot-number">{{ pl.numero }}</div>
+
+            <img
+                *ngIf="pl.statut === 'occupee'"
+                src="assets/car-icon-red.png"
+                class="spot-car"
+            >
+            </div>
+
+        </div>
+
+    </div>
+
+  </div>
+</div>

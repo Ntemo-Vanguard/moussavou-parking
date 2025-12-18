@@ -1,0 +1,119 @@
+<div class="glass-card" style="max-width: 1100px; width: 100%;">
+  <h2 style="margin-top:0; margin-bottom:1rem;">
+    Gestion des cartes RFID
+  </h2>
+
+  <p style="margin-top:0; margin-bottom:1.2rem; color:#9ca3af; font-size:0.9rem;">
+    Les cartes sont créées automatiquement lors de l’inscription des clients.
+    Ici, vous pouvez consulter les cartes et <strong>recharger le solde</strong>.
+  </p>
+
+  <!-- Filtres -->
+  <div style="margin-bottom: 1rem;">
+    <label>Filtrer par statut :</label>
+    <select [(ngModel)]="filterStatut" style="margin-left:0.5rem; padding:0.3rem;">
+      <option value="all">Toutes</option>
+      <option value="active">Actives</option>
+      <option value="bloquee">Bloquées</option>
+    </select>
+  </div>
+
+  <!-- Erreur globale -->
+  <p *ngIf="errorMessage" style="color:#fca5a5; margin-bottom:0.8rem; font-size:0.9rem;">
+    {{ errorMessage }}
+  </p>
+
+  <!-- Tableau des cartes -->
+  <div style="overflow-x:auto; margin-bottom:2rem;">
+    <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+      <thead>
+        <tr style="background:rgba(15,23,42,0.9);">
+          <th style="padding:0.6rem; text-align:left;">Client</th>
+          <th style="padding:0.6rem; text-align:left;">Email</th>
+          <th style="padding:0.6rem; text-align:left;">Code RFID</th>
+          <th style="padding:0.6rem; text-align:left;">Solde</th>
+          <th style="padding:0.6rem; text-align:left;">Statut</th>
+          <th style="padding:0.6rem; text-align:center;">Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let c of filteredCartes"
+            (click)="selectCarte(c)"
+            style="border-top:1px solid rgba(148,163,184,0.3); cursor:pointer;">
+          <td style="padding:0.55rem;">{{ c.utilisateur?.nom || '-' }}</td>
+          <td style="padding:0.55rem;">{{ c.utilisateur?.email || '-' }}</td>
+          <td style="padding:0.55rem;">{{ c.code_rfid }}</td>
+          <td style="padding:0.55rem;">
+            {{ c.solde | currency:'XOF':'symbol' }}
+          </td>
+          <td style="padding:0.55rem;">
+            <span [ngStyle]="{
+              'color': c.statut === 'active' ? '#4ade80' : '#f97373',
+              'font-weight': 500
+            }">
+              {{ c.statut | titlecase }}
+            </span>
+          </td>
+          <td style="padding:0.55rem; text-align:center;">
+            <button class="btn-recharger"
+                    (click)="selectCarte(c); $event.stopPropagation();"
+                    [ngClass]="{ 'open': selectedCarte?.id === c.id }">
+            {{ selectedCarte?.id === c.id ? 'Annuler' : 'Recharger' }}
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngIf="cartes.length === 0">
+          <td colspan="6" style="padding:0.8rem; text-align:center; color:#9ca3af;">
+            Aucune carte enregistrée pour l’instant.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Bloc recharge -->
+  <div *ngIf="selectedCarte" class="glass-card" style="margin-top:1.5rem;">
+    <h3 style="margin-top:0; margin-bottom:0.8rem;">
+      Recharger la carte de {{ selectedCarte.utilisateur?.nom || 'Client' }}
+    </h3>
+
+    <p style="margin-top:0; margin-bottom:0.6rem; color:#9ca3af; font-size:0.9rem;">
+      Code RFID : <strong>{{ selectedCarte.code_rfid }}</strong><br>
+      Solde actuel :
+      <strong>{{ selectedCarte.solde | currency:'XOF':'symbol' }}</strong><br>
+      Statut :
+      <strong>{{ selectedCarte.statut | titlecase }}</strong>
+    </p>
+
+    <form (ngSubmit)="recharger()" style="max-width: 320px;">
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-size:0.9rem;">Montant à recharger</label>
+        <input type="number"
+               [(ngModel)]="montantRecharge"
+               name="montantRecharge"
+               min="0.01"
+               step="0.01"
+               required />
+      </div>
+
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-size:0.9rem;">Moyen de paiement</label>
+        <select [(ngModel)]="moyen" name="moyen">
+          <option value="cash">Cash</option>
+          <option value="orange_money">Orange Money</option>
+          <option value="wave">Wave</option>
+          <option value="free_money">Free Money</option>
+        </select>
+      </div>
+
+      <button class="btn-primary"
+              type="submit"
+              [disabled]="loading"
+              style="width:100%;">
+        {{ loading ? 'Recharge en cours...' : 'Recharger la carte' }}
+      </button>
+    </form>
+  </div>
+</div>

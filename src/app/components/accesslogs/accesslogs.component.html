@@ -1,0 +1,98 @@
+<div class="glass-card" style="max-width:1100px; width:100%;">
+
+  <h2 style="margin-top:0; margin-bottom:1rem;">
+    Journaux d’accès (RFID → Parking)
+  </h2>
+
+  <p style="margin:0 0 1.2rem; color:#9ca3af;">
+    Liste des tentatives d'accès au parking, acceptées ou refusées.
+  </p>
+
+  <!-- FILTRES -->
+  <div class="filters" style="display:flex; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
+    <div>
+      <label>Statut :</label>
+      <select [(ngModel)]="filterStatut" style="margin-left:0.3rem;">
+        <option value="all">Tous</option>
+        <option value="accepte">Acceptés</option>
+        <option value="refuse">Refusés</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Parking :</label>
+      <select [(ngModel)]="filterParking" style="margin-left:0.3rem;">
+        <option value="all">Tous</option>
+        <option *ngFor="let p of parkings" [value]="p.id">
+          {{ p.nom }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- MESSAGE ERREUR -->
+  <p *ngIf="errorMessage" style="color:#f87171;">{{ errorMessage }}</p>
+
+  <!-- TABLE -->
+  <div style="overflow-x:auto;">
+    <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+      <thead>
+        <tr style="background:rgba(15,23,42,0.9);">
+          <th style="padding:0.6rem;">Carte RFID</th>
+          <th style="padding:0.6rem;">Client</th>
+          <th style="padding:0.6rem;">Parking</th>
+          <th style="padding:0.6rem;">Statut</th>
+          <th style="padding:0.6rem;">Raison</th>
+          <th style="padding:0.6rem;">Date</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let log of filteredLogs" style="border-top:1px solid rgba(148,163,184,0.3);">
+          
+          <!-- RFID -->
+          <td style="padding:0.5rem;">
+            {{ log.carte?.code_rfid }}
+          </td>
+
+          <!-- CLIENT -->
+          <td style="padding:0.5rem;">
+            {{ log.carte?.utilisateur?.nom || '-' }}
+          </td>
+
+          <!-- PARKING -->
+          <td style="padding:0.5rem;">
+            {{ log.parking?.nom || '-' }}
+          </td>
+
+          <!-- STATUT -->
+          <td style="padding:0.5rem;">
+            <span 
+              [style.color]="log.statut === 'accepte' ? '#4ade80' : '#f87171'"
+              style="font-weight:600;"
+            >
+              {{ log.statut | titlecase }}
+            </span>
+          </td>
+
+          <!-- RAISON (si refus) -->
+          <td style="padding:0.5rem;">
+            {{ log.raison || '-' }}
+          </td>
+
+          <!-- DATE -->
+          <td style="padding:0.5rem;">
+            {{ log.date_acces | date:'short' }}
+          </td>
+        </tr>
+
+        <tr *ngIf="filteredLogs.length === 0">
+          <td colspan="6" style="padding:1rem; text-align:center; color:#9ca3af;">
+            Aucun résultat.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

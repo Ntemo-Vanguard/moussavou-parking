@@ -1,0 +1,33 @@
+.footer {
+  padding: 0 1.5rem 1rem;
+}
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0.75rem 1.2rem;
+  border-radius: 1rem;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(30, 64, 175, 0.6);
+  backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+.footer-brand {
+  font-weight: 600;
+  color: #e5e7eb;
+}
+.footer-meta {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+@media (min-width: 768px) {
+  .footer-inner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}

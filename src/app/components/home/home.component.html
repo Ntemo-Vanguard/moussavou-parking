@@ -1,0 +1,52 @@
+<div class="glass-card" style="max-width: 900px; width: 100%;">
+  <div style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: center;">
+    <div style="flex: 1 1 260px;">
+      <h1 style="font-size: 2.4rem; margin: 0 0 0.5rem;">
+        Moussavou Smart Parking
+      </h1>
+      <p style="margin: 0 0 1.5rem; color: #9ca3af;">
+        Une plateforme intelligente pour gérer les accès, les parkings et les 
+        paiements, avec carte RFID et supervision en temps réel.
+      </p>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+        <button class="btn-primary" routerLink="/login">
+          Se connecter
+        </button>
+        <button class="btn-outline" routerLink="/register">
+          Créer un compte client
+        </button>
+      </div>
+
+      <p style="margin-top: 1.5rem; font-size: 0.9rem; color:#9ca3af;">
+        Seuls les <strong>clients</strong> s’inscrivent ici. Les comptes 
+        <strong>administrateur</strong> et <strong>gestionnaire</strong> sont créés par l’administrateur.
+      </p>
+    </div>
+
+    <div style="flex: 1 1 260px;">
+      <div
+        routerLink="/etat-parkings"
+        style="
+          cursor: pointer;
+          border-radius: 1.5rem;
+          padding: 1.5rem;
+          background: radial-gradient(circle at top, #0ea5e9, #1e293b 55%, #020617 100%);
+          position: relative;
+          overflow: hidden;
+        "
+      >
+        <p style="margin: 0 0 0.5rem; font-size: 0.85rem; color:#e5e7eb;">
+          Aperçu temps réel
+        </p>
+        <h2 style="margin: 0 0 1rem; font-size: 1.3rem;">
+          Places disponibles : <span style="color:#a5f3fc;">P01, P02, P05...</span>
+        </h2>
+        <p style="margin: 0; font-size: 0.9rem; color:#cbd5f5;">
+          Visualisez les places libres, rechargez votre carte et entrez
+          simplement en passant votre badge RFID.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

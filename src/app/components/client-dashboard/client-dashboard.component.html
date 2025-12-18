@@ -1,0 +1,45 @@
+<div class="glass-card client-dash">
+
+  <h2>Bienvenue 👋 <strong>{{ user?.nom }}</strong></h2>
+  <p class="sub">Voici votre carte RFID</p>
+
+  <!-- CARTE RFID -->
+  <div class="rfid-card">
+    <div class="rfid-header">CARTE RFID</div>
+
+    <div class="rfid-body">
+      <p class="rfid-code">UID : {{ carte?.code_rfid }}</p>
+      <p class="rfid-solde">
+        Solde :
+        <strong>{{ carte?.solde | xof  }}</strong>
+      </p>
+      <p class="rfid-statut" [ngClass]="carte?.statut">
+        {{ carte?.statut | titlecase }}
+      </p>
+    </div>
+
+    <div class="rfid-footer">
+      <strong class="rfid-user">{{ user?.nom }}</strong>
+    </div>
+  </div>
+
+  <!-- Recharge -->
+  <div class="recharge-box">
+    <h3>Recharger ma carte</h3>
+
+    <p *ngIf="error" class="err">{{ error }}</p>
+    <p *ngIf="message" class="msg">{{ message }}</p>
+
+    <input type="number"
+           min="0.01"
+           [(ngModel)]="montant"
+           placeholder="Montant en XOF" style="color:rgba(97, 97, 97, 1);" />
+
+    <button class="btn-recharge"
+            (click)="recharger()"
+            [disabled]="loading">
+      {{ loading ? 'Traitement...' : 'Recharger' }}
+    </button>
+  </div>
+
+</div>

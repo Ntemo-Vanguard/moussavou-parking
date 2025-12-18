@@ -1,0 +1,36 @@
+<div class="glass-card" style="max-width: 480px; width: 100%;">
+  <h2 style="margin-top:0; margin-bottom:1rem;">Créer un compte client</h2>
+  <p style="margin-top:0; margin-bottom:1.5rem; color:#9ca3af; font-size:0.9rem;">
+    Votre carte RFID sera automatiquement générée après inscription.
+  </p>
+
+  <form [formGroup]="form" (ngSubmit)="register()" autocomplete="off">
+    <div style="margin-bottom: 0.9rem;">
+      <label>Nom complet</label>
+      <input formControlName="nom" required>
+    </div>
+
+    <div style="margin-bottom: 0.9rem;">
+      <label>Email</label>
+      <input type="email" formControlName="email" required>
+    </div>
+
+    <div style="margin-bottom: 0.9rem;">
+      <label>Téléphone</label>
+      <input type="text" formControlName="telephone" required>
+    </div>
+
+    <div style="margin-bottom: 0.9rem;">
+      <label>Mot de passe</label>
+      <input type="password" formControlName="mot_de_passe" required>
+    </div>
+
+    <button class="btn-primary" type="submit" [disabled]="loading" style="width:100%;">
+      {{ loading ? 'Création du compte...' : 'Créer mon compte' }}
+    </button>
+
+    <p *ngIf="errorMessage" style="color:#fca5a5; margin-top:0.75rem; font-size:0.9rem;">
+      {{ errorMessage }}
+    </p>
+  </form>
+</div>

@@ -1,0 +1,155 @@
+/* === Fonts globales === */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+:root {
+  --bg: #050816;
+  --primary: #38bdf8;
+  --accent: #f97316;
+  --card-bg: rgba(15, 23, 42, 0.9);
+  --border-radius: 18px;
+  --text-main: #e5e7eb;
+}
+
+/* === Layout global === */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text-main);
+}
+
+app-root {
+  display: block;
+  min-height: 100vh;
+}
+
+.app-shell {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  z-index: 1; /* au dessus du background */
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem 3rem;
+}
+
+/* === Cards / boutons / inputs === */
+.glass-card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  backdrop-filter: blur(14px);
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #0b1120;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+  box-shadow: 0 12px 30px rgba(56, 189, 248, 0.4);
+}
+.btn-outline {
+  background: transparent;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  color: var(--text-main);
+  padding: 0.7rem 1.5rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+input, select {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: rgba(15, 23, 42, 0.9);
+  color: var(--text-main);
+}
+input, select, textarea {
+  font-family: 'Roboto', sans-serif !important;
+  font-size: 15px;
+  font-weight: 600;
+  box-sizing: border-box;
+}
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.4);
+}
+
+/* ------------------------------------------------------------------------
+   BACKGROUND THANO-STYLE (Avec grandes images SVG animées)
+------------------------------------------------------------------------ */
+
+.titan-background {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 120vh;
+  overflow: hidden;
+  z-index: 0; /* derrière l'app-shell */
+  background: radial-gradient(circle at top, #1d3557 0, #050816 55%, #000 100%);
+}
+
+/* couche de base pour toutes les étoiles */
+.stars {
+  position: absolute;
+  top: 0;
+  width: 300vw;      /* très large pour l'animation */
+  height: 100vh;
+  transform-origin: top left;
+  background-repeat: repeat;
+  background-size: contain;
+}
+
+/* Grandes étoiles */
+.stars-L {
+  background-image: url('assets/stars-L.svg');
+  height: 750px;
+  background-size: 890px;
+  animation: panning-stars 200s linear infinite alternate;
+}
+
+/* Étoiles moyennes */
+.stars-M {
+  background-image: url('assets/stars-M.svg');
+  height: 530px;
+  animation: panning-stars 300s linear infinite alternate;
+}
+
+/* Petites étoiles */
+.stars-S {
+  background-image: url('assets/stars-S.svg');
+  height: 370px;
+  animation: panning-stars 400s linear infinite alternate;
+}
+
+/* Animation du mouvement */
+@keyframes panning-stars {
+  from {
+    transform: translate(-20%, 0%);
+  }
+  to {
+    transform: translate(-80%, -40%);
+  }
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

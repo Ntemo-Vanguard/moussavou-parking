@@ -1,0 +1,31 @@
+<div class="glass-card" style="max-width: 420px; width: 100%;">
+  <h2 style="margin-top:0; margin-bottom:1rem;">Connexion</h2>
+  <p style="margin-top:0; margin-bottom:1.5rem; color:#9ca3af; font-size:0.9rem;">
+    Connectez-vous pour accéder à votre carte ou au tableau de bord.
+  </p>
+
+  <form [formGroup]="form" (ngSubmit)="login()" autocomplete="off">
+    <div style="margin-bottom: 1rem;">
+      <label>Email</label>
+      <input type="email" formControlName="email" required>
+    </div>
+
+    <div style="margin-bottom: 1.25rem;">
+      <label>Mot de passe</label>
+      <input type="password" formControlName="mot_de_passe" required>
+    </div>
+
+    <button class="btn-primary" type="submit" [disabled]="loading" style="width:100%;">
+      {{ loading ? 'Connexion...' : 'Se connecter' }}
+    </button>
+
+    <p *ngIf="errorMessage" style="color:#fca5a5; margin-top:0.75rem; font-size:0.9rem;">
+      {{ errorMessage }}
+    </p>
+
+    <p style="margin-top:1.25rem; font-size:0.9rem; color:#9ca3af;">
+      Pas encore de compte ? 
+      <a routerLink="/register" style="color:#38bdf8;">Créer un compte</a>
+    </p>
+  </form>
+</div>

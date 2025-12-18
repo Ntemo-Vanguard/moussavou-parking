@@ -1,0 +1,197 @@
+<div class="glass-card" style="max-width: 1100px; width: 100%;">
+  <h2 style="margin-top:0; margin-bottom:1rem;">
+    Gestion des parkings
+  </h2>
+  
+  <!-- Icône caméra -->
+  <a href="http://192.168.1.56"
+    target="_blank"
+    title="Voir la caméra de surveillance"
+    style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:rgba(15,23,42,0.8);border:1px solid rgba(148,163,184,0.3);text-decoration:none;cursor:pointer;">
+    📷
+  </a><br>
+
+  <p style="margin-top:0; margin-bottom:1.2rem; color:#9ca3af; font-size:0.9rem;">
+    <ng-container *ngIf="role === 'admin'; else gestionnaireMsg">
+      Créez un parking, assignez un gestionnaire, et gérez les places générées automatiquement.
+    </ng-container>
+    <ng-template #gestionnaireMsg>
+      Suivez l’état de votre parking et surveillez l’occupation en temps réel.
+    </ng-template>
+  </p>
+
+  <!-- Formulaire Parking -->
+  <form *ngIf="role === 'admin'" [formGroup]="parkingForm" (ngSubmit)="save()" style="margin-bottom: 2rem;">
+    <div class="row" style="display:flex; flex-wrap:wrap; gap:1rem;">
+
+      <div style="flex:1 1 240px;">
+        <label>Nom du parking</label>
+        <input formControlName="nom" placeholder="Parking A" required />
+      </div>
+
+      <div style="flex:1 1 240px;">
+        <label>Localisation</label>
+        <input formControlName="localisation" placeholder="Dakar, Plateau" required />
+      </div>
+
+      <div style="flex:1 1 150px;">
+        <label>Capacité</label>
+        <input type="number" formControlName="capacite" min="1" required />
+      </div>
+
+      <div style="flex:1 1 220px;">
+        <label>Gestionnaire</label>
+        <select formControlName="gestionnaire_id">
+          <option [ngValue]="null">Aucun</option>
+          <option *ngFor="let g of gestionnaires" [value]="g.id">
+            {{ g.nom }}
+          </option>
+        </select>
+      </div>
+
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; gap:0.6rem; margin-top:1.3rem;">
+      <button class="btn-primary" type="submit" [disabled]="parkingForm.invalid || loading">
+        {{ selectedParkingId ? 'Mettre à jour' : 'Créer' }}
+      </button>
+      <button class="btn-outline" type="button" (click)="resetForm()">
+        Annuler
+      </button>
+    </div>
+
+    <p *ngIf="errorMessage" style="color:#fca5a5; margin-top:0.75rem; font-size:0.9rem;">
+      {{ errorMessage }}
+    </p>
+  </form>
+
+  <!-- Liste des Parkings -->
+  <div style="overflow-x:auto; margin-bottom:2rem;">
+    <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+      <thead>
+        <tr style="background:rgba(15,23,42,0.9);">
+          <th style="padding:0.6rem; text-align:left;">Nom</th>
+          <th style="padding:0.6rem; text-align:left;">Localisation</th>
+          <th style="padding:0.6rem; text-align:left;">Capacité</th>
+          <th style="padding:0.6rem; text-align:left;">Gestionnaire</th>
+          <th style="padding:0.6rem; text-align:center;">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let p of parkings" style="border-top:1px solid rgba(148,163,184,0.3); cursor:pointer;"
+            (click)="selectParking(p)">
+          <td style="padding:0.55rem;">{{ p.nom }}</td>
+          <td style="padding:0.55rem;">{{ p.localisation }}</td>
+          <td style="padding:0.55rem;">{{ p.capacite }}</td>
+          <td style="padding:0.55rem;">
+            {{ p.gestionnaire?.nom || 'Aucun' }}
+          </td>
+          <td style="padding:0.55rem; text-align:center;">
+            <button class="btn-outline"
+                    (click)="edit(p); $event.stopPropagation();"
+                    style="padding:0.25rem 0.7rem; font-size:0.8rem; margin-right:0.3rem;">
+              Modifier
+            </button>
+
+            <button class="btn-outline"
+                    (click)="delete(p); $event.stopPropagation();"
+                    style="padding:0.25rem 0.7rem; font-size:0.8rem;">
+              Supprimer
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngIf="parkings.length === 0">
+          <td colspan="5" style="padding:0.8rem; text-align:center; color:#9ca3af;">
+            Aucun parking enregistré pour l’instant.
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Places du parking sélectionné -->
+  <div *ngIf="selectedParkingId" class="glass-card" style="margin-top:2rem;">
+
+    <h3 style="margin-top:0; margin-bottom:1rem;">
+      Places du parking sélectionné
+    </h3>
+
+    <p style="margin-top:0; margin-bottom:1.2rem; color:#9ca3af; font-size:0.9rem;">
+      Modifiez uniquement le <strong>code capteur</strong>.  
+      Les numéros de places et le statut sont générés automatiquement.
+    </p>
+
+    <div style="overflow-x:auto;">
+      <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+        <thead>
+          <tr style="background:rgba(15,23,42,0.9);">
+            <th style="padding:0.6rem; text-align:left;">Numéro</th>
+            <th style="padding:0.6rem; text-align:left;">Statut</th>
+            <th style="padding:0.6rem; text-align:left;">Code Capteur</th>
+            <th style="padding:0.6rem; text-align:center;">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let place of places" style="border-top:1px solid rgba(148,163,184,0.3);">
+            <td style="padding:0.55rem;">{{ place.numero }}</td>
+
+            <td style="padding:0.55rem;">
+              <span [style.color]="place.statut === 'libre' ? '#4ade80' : '#f87171'">
+                {{ place.statut | titlecase }}
+              </span>
+            </td>
+
+            <td style="padding:0.55rem;">
+              <input [(ngModel)]="place.code_capteur"
+                     name="code_capteur_{{place.id}}"
+                     placeholder="Capteur #X"
+                     style="padding:0.4rem; width:150px;" />
+            </td>
+
+            <td style="padding:0.55rem; text-align:center;">
+              <button class="btn-primary"
+                      (click)="updatePlace(place)"
+                      style="padding:0.25rem 0.7rem; font-size:0.8rem;">
+                Sauvegarder
+              </button>
+            </td>
+          </tr>
+
+          <tr *ngIf="places.length === 0">
+            <td colspan="4" style="padding:0.8rem; text-align:center; color:#9ca3af;">
+              Ce parking n’a pas encore de places générées.
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <div class="parking-map">
+
+      <div 
+        class="parking-spot"
+        *ngFor="let pl of places"
+        [ngClass]="{ 
+          'free': pl.statut === 'libre',
+          'busy': pl.statut === 'occupee'
+        }"
+        [attr.title]="'Place ' + pl.numero + (pl.code_capteur ? ' – Capteur : ' + pl.code_capteur : '')"
+      >
+        <div class="spot-number">{{ pl.numero }}</div>
+
+        <img 
+          *ngIf="pl.statut === 'occupee'" 
+          src="assets/car-icon-red.png"
+          class="spot-car"
+        >
+      </div>
+
+    </div>
+
+  </div>
+</div>

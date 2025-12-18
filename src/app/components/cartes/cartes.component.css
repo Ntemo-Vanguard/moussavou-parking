@@ -1,0 +1,33 @@
+.btn-recharger {
+  padding: 0.25rem 0.7rem;
+  font-size: 0.85rem;
+  border: 1px solid #38bdf8;
+  background: transparent;
+  color: #38bdf8;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+/* Hover → vert fluo */
+.btn-recharger:hover {
+  background-color: #4ade80 !important;
+  border-color: #4ade80 !important;
+  color: #0f172a !important;
+  font-weight: 600;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.7);
+}
+
+/* Quand le bloc recharge est ouvert */
+.btn-recharger.open {
+  background-color: #1e40af;
+  color: white;
+  border-color: #1e40af;
+}
+
+/* Hover de l'état "Annuler" */
+.btn-recharger.open:hover {
+  background-color: #ef4444 !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.7);
+}
