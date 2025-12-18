@@ -33,7 +33,7 @@ export class CarteService {
   }
 
   initierRechargePaytech(carteId: number, montant: number) {
-    return this.http.post('http://localhost:8000/api/paytech/init', {
+    return this.http.post('https://vps-eadfdcc9.vps.ovh.net/api/paytech/init', {
       carte_id: carteId,
       montant: montant
     });
