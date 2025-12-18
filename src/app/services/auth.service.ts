@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:8000/api';
+  private baseUrl = 'https://vps-eadfdcc9.vps.ovh.net/api';
 
   constructor(private http: HttpClient, private router: Router) {}
 

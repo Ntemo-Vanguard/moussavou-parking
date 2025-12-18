@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CarteService {
-  private apiUrl = 'http://localhost:8000/api/cartes';
+  private apiUrl = 'https://vps-eadfdcc9.vps.ovh.net/api/cartes';
 
   constructor(private http: HttpClient) {}
 

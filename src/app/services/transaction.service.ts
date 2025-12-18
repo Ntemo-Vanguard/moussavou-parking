@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class TransactionService {
-  private apiUrl = 'http://localhost:8000/api/transactions';
+  private apiUrl = 'https://vps-eadfdcc9.vps.ovh.net/api/transactions';
 
   constructor(private http: HttpClient) {}
 
