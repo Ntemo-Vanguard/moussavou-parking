@@ -11,8 +11,9 @@
       <p class="rfid-code">UID : {{ carte?.code_rfid }}</p>
       <p class="rfid-solde">
         Solde :
-        <strong>{{ carte?.solde | xof  }}</strong>
+        <strong>{{ displayedSolde | xof }}</strong>
       </p>
+
       <p class="rfid-statut" [ngClass]="carte?.statut">
         {{ carte?.statut | titlecase }}
       </p>

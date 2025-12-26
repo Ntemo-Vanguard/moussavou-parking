@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { interval, Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { CarteService } from '../../services/carte.service';
 
@@ -12,6 +13,9 @@ export class ClientDashboardComponent implements OnInit {
 
   user: any = null;
   carte: any = null;
+  displayedSolde: number = 0;     // solde animé
+  private refreshSub?: Subscription;
+
 
   montant = 0;
   loading = false;
@@ -23,14 +27,39 @@ export class ClientDashboardComponent implements OnInit {
   ngOnInit(): void {
     this.user = this.auth.getUser();
     if (this.user) {
-      this.getCarte();
+      this.getCarte(true);
+
+      // 🔁 Rafraîchissement automatique toutes les 10 secondes
+      this.refreshSub = interval(10000).subscribe(() => {
+        this.getCarte(false);
+      });
     }
   }
 
-  getCarte() {
+  ngOnDestroy(): void {
+    this.refreshSub?.unsubscribe();
+  }
+
+  getCarte(initial = false) {
     this.carteService.getAll().subscribe({
       next: (data) => {
-        this.carte = data.find((c: any) => c.utilisateur_id === this.user.id);
+        const newCarte = data.find((c: any) => c.utilisateur_id === this.user.id);
+
+        if (!newCarte) return;
+
+        // Premier chargement → pas d’animation
+        if (initial || !this.carte) {
+          this.carte = newCarte;
+          this.displayedSolde = newCarte.solde;
+          return;
+        }
+
+        // 🔍 Si le solde a changé → animation
+        if (newCarte.solde !== this.carte.solde) {
+          this.animateSolde(this.displayedSolde, newCarte.solde);
+        }
+
+        this.carte = newCarte;
       }
     });
   }
@@ -66,4 +95,27 @@ export class ClientDashboardComponent implements OnInit {
         }
       });
   }
+
+  animateSolde(from: number, to: number) {
+    const duration = 800; // ms
+    const start = performance.now();
+
+    const animate = (time: number) => {
+      const progress = Math.min((time - start) / duration, 1);
+
+      // easing (effet fluide)
+      const eased = 1 - Math.pow(1 - progress, 3);
+
+      this.displayedSolde = Math.floor(from + (to - from) * eased);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        this.displayedSolde = to; // valeur finale exacte
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }
+
 }
