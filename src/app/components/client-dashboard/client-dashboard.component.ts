@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { CarteService } from '../../services/carte.service';
@@ -22,7 +22,7 @@ export class ClientDashboardComponent implements OnInit {
   message = '';
   error = '';
 
-  constructor(private auth: AuthService, private carteService: CarteService) {}
+  constructor(private auth: AuthService, private carteService: CarteService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.user = this.auth.getUser();
@@ -97,21 +97,24 @@ export class ClientDashboardComponent implements OnInit {
   }
 
   animateSolde(from: number, to: number) {
-    const duration = 800; // ms
+    const duration = 800;
     const start = performance.now();
 
     const animate = (time: number) => {
       const progress = Math.min((time - start) / duration, 1);
 
-      // easing (effet fluide)
       const eased = 1 - Math.pow(1 - progress, 3);
 
       this.displayedSolde = Math.floor(from + (to - from) * eased);
 
+      // 🔥 OBLIGATOIRE : forcer Angular à rafraîchir la vue
+      this.cdr.detectChanges();
+
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
-        this.displayedSolde = to; // valeur finale exacte
+        this.displayedSolde = to;
+        this.cdr.detectChanges();
       }
     };
 
