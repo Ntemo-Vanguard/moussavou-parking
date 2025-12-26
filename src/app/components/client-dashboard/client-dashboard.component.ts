@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { CarteService } from '../../services/carte.service';
@@ -22,7 +22,7 @@ export class ClientDashboardComponent implements OnInit {
   message = '';
   error = '';
 
-  constructor(private auth: AuthService, private carteService: CarteService, private cdr: ChangeDetectorRef) {}
+  constructor(private auth: AuthService, private carteService: CarteService) {}
 
   ngOnInit(): void {
     this.user = this.auth.getUser();
@@ -44,19 +44,21 @@ export class ClientDashboardComponent implements OnInit {
     this.carteService.getAll().subscribe({
       next: (data) => {
         const newCarte = data.find((c: any) => c.utilisateur_id === this.user.id);
-
         if (!newCarte) return;
 
-        // Premier chargement → pas d’animation
+        const newSolde = Number(newCarte.solde);
+        const oldSolde = Number(this.displayedSolde);
+
+        // Premier chargement
         if (initial || !this.carte) {
           this.carte = newCarte;
-          this.displayedSolde = newCarte.solde;
+          this.displayedSolde = newSolde;
           return;
         }
 
-        // 🔍 Si le solde a changé → animation
-        if (newCarte.solde !== this.carte.solde) {
-          this.animateSolde(this.displayedSolde, newCarte.solde);
+        // 🔥 Animation UNIQUEMENT si valeurs valides
+        if (!Number.isNaN(newSolde) && !Number.isNaN(oldSolde) && newSolde !== oldSolde) {
+          this.animateSolde(oldSolde, newSolde);
         }
 
         this.carte = newCarte;
@@ -97,28 +99,39 @@ export class ClientDashboardComponent implements OnInit {
   }
 
   animateSolde(from: number, to: number) {
-    const duration = 800;
+    // Sécurité absolue
+    from = Number(from);
+    to   = Number(to);
+
+    if (Number.isNaN(from) || Number.isNaN(to)) {
+      this.displayedSolde = to;
+      return;
+    }
+
+    const duration = 1200; // animation bien visible
     const start = performance.now();
 
-    const animate = (time: number) => {
-      const progress = Math.min((time - start) / duration, 1);
+    const animate = (now: number) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
 
-      const eased = 1 - Math.pow(1 - progress, 3);
+      // 🎰 easing type "roulette"
+      const eased = 1 - Math.pow(1 - progress, 4);
 
-      this.displayedSolde = Math.floor(from + (to - from) * eased);
+      const current = from + (to - from) * eased;
 
-      // 🔥 OBLIGATOIRE : forcer Angular à rafraîchir la vue
-      this.cdr.detectChanges();
+      // IMPORTANT : arrondi progressif (pas floor brutal)
+      this.displayedSolde = Math.round(current);
 
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
-        this.displayedSolde = to;
-        this.cdr.detectChanges();
+        this.displayedSolde = to; // verrou final
       }
     };
 
     requestAnimationFrame(animate);
   }
+
 
 }
